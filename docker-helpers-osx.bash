@@ -3,6 +3,7 @@
 # set -o pipefail
 DOCKER="docker"
 DOCKER_MACHINE="docker-machine"
+DOCKER_COMPOSE="docker-compose"
 EXPORTS_FILE="/etc/exports"
 BEGIN_TAG="# DOCKER-HELPERS-OSX-BEGIN"
 END_TAG="# DOCKER-HELPERS-OSX-END"
@@ -38,6 +39,21 @@ dm() {
   else
     $DOCKER_MACHINE "$@"
   fi
+}
+
+
+# Shortcut for docker-compose command
+# Commands are forwarded to docker-compose
+# Warning: this will override existing dc command, a reverse-polish desk calculator
+dc() {
+  case $1 in
+    "http")
+    __dc_http $2
+    ;;
+    *)
+      $DOCKER_COMPOSE "$@"
+      ;;
+  esac
 }
 
 
@@ -128,4 +144,13 @@ __dm_stop() {
 __dm_restart() {
   __dm_stop
   __dm_start
+}
+
+
+# point the default browser on docker host ip, and specified port
+# $1 : the port (defaults to 80)
+__dc_http() {
+  ip=`$DOCKER_MACHINE ip $DOCKER_HELPERS_OSX_MACHINE`
+  port=${1:-80}
+  open "http://$ip:$port"
 }
