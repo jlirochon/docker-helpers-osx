@@ -83,6 +83,13 @@ EOF"
 }
 
 
+# Copy /etc/localtime from the mac to the Docker host
+# See https://github.com/boot2docker/boot2docker/issues/476
+__copy_localtime() {
+  cat /etc/localtime | $DOCKER_MACHINE ssh $DOCKER_HELPERS_OSX_MACHINE "sudo /bin/sh -c 'cat > /etc/localtime'"
+}
+
+
 # Mount NFS export from inside the machine
 __mount_nfs_volume() {
   ip=`$DOCKER_MACHINE ip`
@@ -127,6 +134,7 @@ __wait_for_docker() {
 # Start the machine and make everything usable
 __dm_start() {
   $DOCKER_MACHINE start $DOCKER_HELPERS_OSX_MACHINE
+  __copy_localtime
   __mount_nfs_volume
   __wait_for_docker
   __update_env
