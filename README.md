@@ -1,3 +1,7 @@
+# Obsolete stuff ! You should use [Docker for Mac](https://docs.docker.com/docker-for-mac/) instead.
+
+---
+
 # docker-helpers-osx
 
 A small script which simplify NFS file sharing between OS X and a Docker host running in a local virtual machine.
